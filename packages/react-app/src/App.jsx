@@ -19,7 +19,7 @@ import {
 } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
-import { formatEther } from "@ethersproject/units";
+import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views";
 /*
@@ -79,6 +79,9 @@ function App(props) {
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userProvider, gasPrice);
 
+  // Faucet Tx can be used to send funds from the faucet
+  const faucetTx = Transactor(localProvider, gasPrice)
+
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
   if (DEBUG) console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
@@ -133,6 +136,24 @@ function App(props) {
   useEffect(() => {
     setRoute(window.location.pathname);
   }, [setRoute]);
+
+  let faucetHint = ""
+  const [ faucetClicked, setFaucetClicked ] = useState( false );
+  if(!faucetClicked&&localProvider&&localProvider.getSigner()&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
+    faucetHint = (
+      <div style={{padding:16}}>
+        <Button type={"primary"} onClick={()=>{
+          faucetTx({
+            to: address,
+            value: parseEther("0.01"),
+          });
+          setFaucetClicked(true)
+        }}>
+          💰 Grab funds from the faucet ⛽️
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
@@ -245,6 +266,7 @@ function App(props) {
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+<<<<<<< HEAD
         <Account
           address={address}
           localProvider={localProvider}
@@ -256,6 +278,20 @@ function App(props) {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
         />
+=======
+         <Account
+           address={address}
+           localProvider={localProvider}
+           userProvider={userProvider}
+           mainnetProvider={mainnetProvider}
+           price={price}
+           web3Modal={web3Modal}
+           loadWeb3Modal={loadWeb3Modal}
+           logoutOfWeb3Modal={logoutOfWeb3Modal}
+           blockExplorer={blockExplorer}
+         />
+         {faucetHint}
+>>>>>>> 8082d2511e42ab7e0500274fef0e93d74e58757a
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
