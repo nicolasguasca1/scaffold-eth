@@ -1,4 +1,4 @@
-packages/subgraph/subgraph.yaml
+packages/subgraph/src/subgraph.yaml
 packages/subgraph/generated
 packages/subgraph/abis/*
 packages/hardhat/*.txt
